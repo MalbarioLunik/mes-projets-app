@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e1014">
+<title>Mes Projets</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗂️</text></svg>">
+<style>
+:root{
+  --tint-glass:255,255,255; --tint-blue:96,165,250; --tint-green:52,211,153; --tint-yellow:250,204,21;
+  --tint-orange:251,146,60; --tint-red:248,113,113; --tint-purple:167,139,250; --tint-pink:244,114,182;
+  --bg:#0e1014; --panel:#161920; --panel-2:#1e222b; --line:rgba(255,255,255,.09); --text:#e8eaf0; --muted:#8b92a3;
+  --accent:#8b9cff; --dot:rgba(255,255,255,.08); --board:#111318; --glass-bg:rgba(22,25,32,.72);
+  --card-a:.08; --head-a:.16; --border-a:.38; --shadow:0 10px 30px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+:root[data-theme=light]{
+  --tint-glass:100,116,139;
+  --bg:#eef0f4; --panel:#ffffff; --panel-2:#f3f4f7; --line:rgba(0,0,0,.09); --text:#1b1f2a; --muted:#6b7280;
+  --accent:#4f5bd5; --dot:rgba(0,0,0,.13); --board:#f8f9fb; --glass-bg:rgba(255,255,255,.62);
+  --card-a:.10; --head-a:.20; --border-a:.50; --shadow:0 8px 24px rgba(30,40,60,.12);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.muted{color:var(--muted)} .small{font-size:12px}
+[hidden]{display:none!important}
+#app{display:flex;flex-direction:column;height:100dvh}
+
+/* ---------- Barre du haut ---------- */
+#topbar{display:flex;align-items:center;gap:6px;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;z-index:20}
+.btn{border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:6px 10px;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:#f87171}
+.icon-btn{border:0;background:transparent;border-radius:7px;padding:3px 6px;line-height:1;color:var(--muted)}
+.icon-btn:hover{background:var(--line);color:var(--text)}
+#homeBtn{font-weight:600}
+#homeBtn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+#tabs{display:flex;gap:4px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;border:1px solid transparent;background:transparent;border-radius:9px;padding:6px 10px;white-space:nowrap;color:var(--muted);flex:0 0 auto}
+.tab:hover{background:var(--panel-2);color:var(--text)}
+.tab.active{background:var(--panel-2);border-color:var(--line);color:var(--text)}
+.tab::after{content:"";position:absolute;left:10px;right:10px;bottom:2px;height:2px;border-radius:2px;background:rgb(var(--tint));opacity:0}
+.tab.active::after{opacity:1}
+.sync-status{display:flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);font-size:12px;padding:4px 6px;border-radius:7px;white-space:nowrap}
+.sync-status:hover{background:var(--panel-2)}
+.sync-status .dot{width:9px;height:9px;border-radius:50%;background:#6b7280}
+.sync-status.ok .dot{background:#34d399}
+.sync-status.dirty .dot{background:#fb923c}
+.sync-status.busy .dot{background:#60a5fa;animation:pulse 1s infinite}
+.sync-status.err .dot{background:#f87171}
+.sync-status.err{color:#f87171}
+@keyframes pulse{50%{opacity:.3}}
+
+/* ---------- Accueil ---------- */
+#home{flex:1;overflow:auto;padding:28px clamp(16px,4vw,48px) 60px}
+#home h1{margin:0 0 4px;font-size:26px}
+#home .sub{margin:0 0 22px;color:var(--muted)}
+#projGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:16px;cursor:pointer;
+  background:rgba(var(--tint),var(--card-a));border:1px solid rgba(var(--tint),var(--border-a));box-shadow:var(--shadow);transition:transform .12s,border-color .12s;outline:none}
+.tile:hover,.tile:focus-visible{transform:translateY(-2px);border-color:rgb(var(--tint))}
+.tile-top{display:flex;align-items:center;gap:10px}
+.tile-emoji{font-size:24px;width:40px;height:40px;display:grid;place-items:center;border-radius:11px;background:rgba(var(--tint),.18);flex:0 0 auto}
+.tile-name{font-weight:650;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tile-actions{position:absolute;top:10px;right:10px;display:flex;gap:2px;opacity:0;transition:opacity .12s;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:2px}
+.tile:hover .tile-actions,.tile:focus-within .tile-actions{opacity:1}
+.minimap{height:96px;border-radius:10px;background:var(--board);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}
+.minimap svg{width:100%;height:100%;display:block}
+.tile-stats{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.bar{height:5px;border-radius:5px;background:var(--line);overflow:hidden}
+.bar>div{height:100%;background:rgb(var(--tint));border-radius:5px;transition:width .2s}
+.tile-next{margin:0;padding:0 0 0 18px;font-size:13px}
+.tile-next li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile-kbd{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--muted);opacity:.7}
+.tile.new{--tint:var(--tint-glass);border-style:dashed;place-items:center;justify-content:center;align-items:center;min-height:200px;color:var(--muted);font-size:15px;box-shadow:none}
+.home-help{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.8}
+kbd{font:11px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--panel-2)}
+
+/* ---------- Tableau blanc ---------- */
+#board{flex:1;position:relative;overflow:hidden;background:var(--board)}
+#viewport{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:default;
+  background-image:radial-gradient(circle,var(--dot) 1.2px,transparent 1.3px)}
+body.panning #viewport{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;width:0;height:0}
+#emptyHint{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;color:var(--muted);text-align:center;padding:20px}
+#toolbar{position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:4px;padding:6px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);z-index:5}
+#toolbar button{border:0;background:transparent;border-radius:9px;padding:7px 11px;white-space:nowrap}
+#toolbar button:hover{background:var(--panel-2)}
+#zoomCtl{position:absolute;right:14px;bottom:max(16px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:2px;padding:4px;border-radius:12px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);z-index:5}
+#zoomCtl button{border:0;background:transparent;border-radius:8px;width:30px;height:30px}
+#zoomCtl button:hover{background:var(--panel-2)}
+#zoomLabel{min-width:46px;text-align:center;font-size:12px;color:var(--muted);border:0;background:transparent}
+#boardHelp{position:absolute;left:14px;bottom:max(20px,env(safe-area-inset-bottom));font-size:12px;color:var(--muted);opacity:.8;z-index:4;pointer-events:none}
+
+/* ---------- Cartes ---------- */
+.card{position:absolute;display:flex;flex-direction:column;border-radius:14px;
+  background:linear-gradient(rgba(var(--tint),var(--card-a)),rgba(var(--tint),var(--card-a))),var(--glass-bg);border:1px solid rgba(var(--tint),var(--border-a));
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:var(--shadow);overflow:hidden}
+.card.lifted{box-shadow:0 18px 45px rgba(0,0,0,.4);border-color:rgb(var(--tint))}
+.card-head{display:flex;align-items:center;gap:4px;padding:6px 6px 6px 10px;background:rgba(var(--tint),var(--head-a));
+  border-bottom:1px solid rgba(var(--tint),.22);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;flex:0 0 auto}
+body.dragging .card-head{cursor:grabbing}
+.card-icon{font-size:14px}
+.card-title{flex:1;min-width:0;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;outline:none;padding:1px 4px;border-radius:6px}
+.card-title[contenteditable=true]{cursor:text;background:var(--panel);user-select:text;-webkit-user-select:text;text-overflow:clip}
+.card-head .icon-btn{opacity:0;transition:opacity .1s}
+.card:hover .card-head .icon-btn,.card:focus-within .card-head .icon-btn{opacity:1}
+.swatch-btn::before{content:"";display:block;width:12px;height:12px;border-radius:50%;background:rgb(var(--tint));border:1px solid var(--line)}
+.card-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;padding:8px 10px 12px}
+.card-resize{position:absolute;right:0;bottom:0;width:20px;height:20px;cursor:nwse-resize;touch-action:none;
+  background:linear-gradient(135deg,transparent 55%,rgba(var(--tint),.55) 55%,rgba(var(--tint),.55) 62%,transparent 62%,transparent 72%,rgba(var(--tint),.55) 72%,rgba(var(--tint),.55) 79%,transparent 79%)}
+body.dragging iframe,body.panning iframe{pointer-events:none}
+@media (hover:none){.card-head .icon-btn,.tile-actions{opacity:1}}
+
+.field{width:100%;border:1px solid transparent;background:rgba(var(--tint),.10);border-radius:8px;padding:6px 8px;outline:none}
+.field:focus{border-color:rgba(var(--tint),.7);background:var(--panel)}
+textarea.field{resize:none;flex:1;min-height:0;line-height:1.5}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.todo-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.todo-head .bar{flex:1}
+.link-btn{border:0;background:none;color:var(--muted);font-size:12px;padding:0}
+.link-btn:hover{color:var(--text);text-decoration:underline}
+.todo-list,.link-list{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:2px;margin:0 -4px;padding:0 4px}
+.todo-item,.link-item{display:flex;align-items:flex-start;gap:7px;padding:4px 4px;border-radius:7px}
+.todo-item:hover,.link-item:hover{background:rgba(var(--tint),.10)}
+.todo-item input[type=checkbox]{margin:3px 0 0;width:16px;height:16px;accent-color:rgb(var(--tint));flex:0 0 auto;cursor:pointer}
+.todo-text{flex:1;min-width:0;outline:none;word-break:break-word;border-radius:4px}
+.todo-text:focus{background:var(--panel);padding:0 3px}
+.todo-item.done .todo-text{text-decoration:line-through;color:var(--muted)}
+.todo-item .x,.link-item .x{border:0;background:none;color:var(--muted);opacity:0;padding:0 2px;flex:0 0 auto}
+.todo-item:hover .x,.link-item:hover .x{opacity:1}
+@media (hover:none){.todo-item .x,.link-item .x{opacity:.6}}
+.drag-dot{cursor:grab;color:var(--muted);opacity:0;user-select:none;padding:0 1px;touch-action:none;flex:0 0 auto}
+.todo-item:hover .drag-dot{opacity:.7}
+.todo-item.drop-before{box-shadow:inset 0 2px 0 rgb(var(--tint))}
+.link-item a{flex:1;min-width:0;color:var(--text);text-decoration:none;display:flex;flex-direction:column}
+.link-item a:hover .link-label{text-decoration:underline}
+.link-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-host{font-size:11px;color:var(--muted)}
+.link-ico{flex:0 0 auto;width:18px;text-align:center}
+
+.media{flex:1 1 55%;min-height:60px;border-radius:9px;overflow:hidden;background:rgba(0,0,0,.25);display:flex;position:relative}
+.media iframe,.media video,.media img{width:100%;height:100%;border:0;object-fit:contain;display:block}
+.media-empty{margin:auto;color:var(--muted);text-align:center;padding:10px}
+.yt-thumb{flex:1;border:0;background:#000 center/cover no-repeat;display:grid;place-items:center}
+.yt-thumb .play{width:58px;height:40px;border-radius:12px;background:rgba(220,38,38,.92);color:#fff;display:grid;place-items:center;font-size:18px}
+.media-open{position:absolute;top:6px;right:6px;font-size:11px;padding:2px 7px;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;text-decoration:none}
+.media-link{margin:auto;color:var(--text);padding:10px;word-break:break-all;text-align:center}
+.media-notes{flex:1 1 30%!important}
+
+/* ---------- Popover / dialogues ---------- */
+.popover{position:fixed;z-index:100;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:8px}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;background:rgb(var(--tint));padding:0}
+.swatch.sel{border-color:var(--text)}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);padding:20px;width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.45);backdrop-filter:blur(2px)}
+dialog h2{margin:0 0 6px;font-size:18px}
+dialog label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);margin:10px 0 0;flex:1}
+dialog label.check{flex-direction:row;align-items:center;gap:8px;font-size:13px;color:var(--text)}
+dialog input:not([type=checkbox]){border:1px solid var(--line);background:var(--panel-2);border-radius:9px;padding:8px 10px;color:var(--text);font-size:14px;outline:none;width:100%}
+dialog input:focus{border-color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>label{min-width:140px}
+.btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.btns .left{margin-right:auto}
+.msg{margin-top:12px;font-size:13px;padding:8px 10px;border-radius:9px;background:var(--panel-2)}
+.msg.ok{color:#34d399} .msg.err{color:#f87171}
+details{margin-top:14px;font-size:13px;color:var(--muted)}
+details summary{cursor:pointer;color:var(--text)}
+details ol{padding-left:20px;margin:8px 0}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0 6px}
+.emoji-pick{display:flex;gap:2px;flex-wrap:wrap;margin-top:6px}
+.emoji-pick button{border:0;background:transparent;font-size:18px;border-radius:7px;padding:2px 4px}
+.emoji-pick button:hover{background:var(--panel-2)}
+#switchDlg{padding:8px;top:12vh;margin-top:0}
+#switchInput{font-size:16px!important}
+#switchList{margin-top:6px;display:flex;flex-direction:column;gap:2px;max-height:50vh;overflow:auto}
+.sw-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;border:0;background:transparent;text-align:left}
+.sw-item.sel,.sw-item:hover{background:var(--panel-2)}
+.sw-item .k{margin-left:auto;font-size:11px;color:var(--muted)}
+
+@media (max-width:640px){
+  .sync-status .txt,.hide-sm{display:none}
+  #toolbar .lbl{display:none}
+  #toolbar button{font-size:18px;padding:6px 10px}
+  #toolbar{left:12px;transform:none}
+  #boardHelp{display:none}
+  #home{padding-top:18px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <button class="btn" id="homeBtn" title="Accueil (Alt+0)">🏠<span class="hide-sm"> Projets</span></button>
+    <nav id="tabs"></nav>
+    <button class="sync-status" id="syncStatus" title=""><span class="dot"></span><span class="txt">Local</span></button>
+    <button class="icon-btn" id="syncBtn" title="Synchroniser maintenant (Ctrl+S)" style="font-size:16px">⟳</button>
+    <button class="icon-btn" id="themeBtn" title="Thème clair / sombre" style="font-size:16px">🌓</button>
+    <button class="icon-btn" id="settingsBtn" title="Réglages & GitHub" style="font-size:16px">⚙</button>
+  </header>
+
+  <main id="home">
+    <h1>Mes projets</h1>
+    <p class="sub">Clique sur un projet pour ouvrir son tableau blanc.</p>
+    <div id="projGrid"></div>
+    <div class="home-help">
+      <kbd>Alt</kbd>+<kbd>1</kbd>…<kbd>9</kbd> ouvrir un projet · <kbd>Alt</kbd>+<kbd>0</kbd> accueil ·
+      <kbd>Ctrl</kbd>+<kbd>K</kbd> passer d'un projet à l'autre · <kbd>Ctrl</kbd>+<kbd>S</kbd> synchroniser GitHub
+    </div>
+  </main>
+
+  <main id="board" hidden>
+    <div id="viewport"><div id="world"></div></div>
+    <div id="emptyHint">Tableau vide.<br>Ajoute un bloc avec la barre en bas, ou double-clique n'importe où.</div>
+    <div id="boardHelp">Glisser le fond : se déplacer · Molette / pincer : zoom · Double-clic : nouvelle note</div>
+    <div id="toolbar">
+      <button data-add="todo" title="Nouvelle to-do list">☑️<span class="lbl"> To-do</span></button>
+      <button data-add="note" title="Nouvelle note / info">📝<span class="lbl"> Note</span></button>
+      <button data-add="links" title="Nouvelle liste de liens">🔗<span class="lbl"> Liens</span></button>
+      <button data-add="video" title="Nouvelle vidéo / média">🎬<span class="lbl"> Vidéo</span></button>
+    </div>
+    <div id="zoomCtl">
+      <button id="zoomOut" title="Dézoomer">−</button>
+      <button id="zoomLabel" title="Revenir à 100 %">100%</button>
+      <button id="zoomIn" title="Zoomer">+</button>
+      <button id="zoomFit" title="Tout afficher">⤢</button>
+    </div>
+  </main>
+</div>
+
+<!-- Projet -->
+<dialog id="projDlg">
+  <form method="dialog" id="projForm">
+    <h2 id="projDlgTitle">Nouveau projet</h2>
+    <div class="row">
+      <label style="flex:0 0 76px;min-width:76px">Icône<input id="projEmoji" maxlength="8" autocomplete="off"></label>
+      <label>Nom du projet<input id="projName" required autocomplete="off" placeholder="ex : Bot trading memecoin"></label>
+    </div>
+    <div class="emoji-pick" id="emojiPick"></div>
+    <label>Couleur</label>
+    <div class="swatches" id="projColors" style="margin-top:6px"></div>
+    <div class="btns">
+      <button class="btn" value="cancel" formnovalidate>Annuler</button>
+      <button class="btn primary" value="ok">Enregistrer</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Changement rapide -->
+<dialog id="switchDlg">
+  <input id="switchInput" placeholder="Aller à un projet…" autocomplete="off">
+  <div id="switchList"></div>
+</dialog>
+
+<!-- Réglages -->
+<dialog id="settingsDlg">
+  <form method="dialog" id="settingsForm">
+    <h2>⚙ Réglages & sauvegarde GitHub</h2>
+    <p class="muted small" style="margin:0">Tes données sont toujours enregistrées dans ce navigateur. Relie un dépôt GitHub pour les retrouver
+      sur tous tes appareils (PC, portable, téléphone) : chaque sauvegarde devient un commit d'un fichier JSON.</p>
+    <label>Token GitHub (fine-grained, permission « Contents : Read and write »)
+      <input id="cfgToken" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+    <div class="row">
+      <label>Propriétaire<input id="cfgOwner" autocomplete="off" placeholder="MalbarioLunik"></label>
+      <label>Dépôt<input id="cfgRepo" autocomplete="off" placeholder="mes-projets-data"></label>
+    </div>
+    <div class="row">
+      <label>Branche<input id="cfgBranch" autocomplete="off" placeholder="main"></label>
+      <label>Fichier<input id="cfgPath" autocomplete="off" placeholder="taskboard/data.json"></label>
+    </div>
+    <label>Nom de cet appareil (apparaît dans les commits)<input id="cfgDevice" autocomplete="off"></label>
+    <label class="check"><input type="checkbox" id="cfgAuto"> Synchronisation automatique (quelques secondes après chaque modification)</label>
+    <div id="cfgMsg" class="msg" hidden></div>
+    <div class="btns">
+      <button class="btn left" type="button" id="cfgTest">Tester la connexion</button>
+      <button class="btn" value="cancel" formnovalidate>Fermer</button>
+      <button class="btn primary" type="button" id="cfgSave">Enregistrer & synchroniser</button>
+    </div>
+    <details>
+      <summary>Comment créer le token ? (2 minutes)</summary>
+      <ol>
+        <li>Crée un dépôt <b>privé</b> sur GitHub, par ex. <code>mes-projets-data</code> (coche « Add a README »).</li>
+        <li>Va sur <b>GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b>.</li>
+        <li>Repository access : <b>Only select repositories</b> → choisis ce dépôt.</li>
+        <li>Permissions → Repository permissions → <b>Contents : Read and write</b>.</li>
+        <li>Génère, copie le token (<code>github_pat_…</code>) et colle-le ici. Fais pareil sur chaque appareil (même dépôt, même fichier).</li>
+      </ol>
+      Le token reste uniquement dans ce navigateur (localStorage) : utilise-le sur tes appareils personnels.
+    </details>
+    <hr>
+    <div class="btns" style="justify-content:flex-start;margin-top:10px">
+      <button class="btn" type="button" id="exportBtn">⬇ Exporter (JSON)</button>
+      <button class="btn" type="button" id="importBtn">⬆ Importer (JSON)</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+  </form>
+</dialog>
+
+<script>
+"use strict";
+/* =========================================================
+   Utilitaires
+   ========================================================= */
+const $ = (s, el = document) => el.querySelector(s);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const now = () => Date.now();
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const LS = { data: 'tb.data', cfg: 'tb.config', meta: 'tb.meta', views: 'tb.views', theme: 'tb.theme' };
+function lsGet(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { console.warn('localStorage', e); } }
+
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'style') for (const [sk, sv] of Object.entries(v)) sk.startsWith('--') ? el.style.setProperty(sk, sv) : (el.style[sk] = sv);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (k === 'value') el.value = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  return el;
+}
+// JSON à clés triées : sert à comparer deux états sans dépendre de l'ordre des clés
+function canon(o) {
+  if (Array.isArray(o)) return '[' + o.map(canon).join(',') + ']';
+  if (o && typeof o === 'object') return '{' + Object.keys(o).sort().map(k => JSON.stringify(k) + ':' + canon(o[k])).join(',') + '}';
+  return JSON.stringify(o);
+}
+function utf8ToB64(str) {
+  const bytes = new TextEncoder().encode(str); let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+function b64ToUtf8(b64) {
+  const bin = atob(b64.replace(/\s/g, '')); const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+const isHttp = u => /^https?:\/\//i.test(u || '');
+function ytId(u) { const m = (u || '').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/); return m && m[1]; }
+function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } }
+
+/* =========================================================
+   Modèle de données
+   ========================================================= */
+const COLORS = ['glass', 'blue', 'green', 'yellow', 'orange', 'red', 'purple', 'pink'];
+const TYPES = {
+  todo:  { icon: '☑️', label: 'To-do',          w: 290, h: 330, color: 'blue' },
+  note:  { icon: '📝', label: 'Note / Info',    w: 300, h: 240, color: 'yellow' },
+  links: { icon: '🔗', label: 'Liens',          w: 300, h: 260, color: 'green' },
+  video: { icon: '🎬', label: 'Vidéo / Média',  w: 380, h: 360, color: 'purple' },
+};
+function makeCard(type, x, y, extra = {}) {
+  const t = TYPES[type];
+  const c = { id: uid(), type, x: Math.round(x), y: Math.round(y), w: t.w, h: t.h, z: 0, title: t.label, color: t.color, updatedAt: now() };
+  if (type === 'todo' || type === 'links') c.items = [];
+  if (type === 'note') c.text = '';
+  if (type === 'video') { c.url = ''; c.text = ''; }
+  return Object.assign(c, extra);
+}
+function seed() {
+  const t = now();
+  const mk = (name, emoji, color) => ({ id: uid(), name, emoji, color, createdAt: t, updatedAt: t, cards: [
+    makeCard('todo', 40, 40, { title: 'À faire' }),
+    makeCard('note', 370, 40, { title: 'Infos' }),
+  ] });
+  return { version: 1, updatedAt: t, tombstones: {}, projects: [
+    mk('Bot trading memecoin', '🤖', 'green'),
+    mk('Info trading memecoin manuel', '📈', 'yellow'),
+    mk('Bot trading Kalshi', '🎯', 'blue'),
+    mk('Apps influence AI', '✨', 'purple'),
+  ] };
+}
+function normalize(d) {
+  d = d && typeof d === 'object' ? d : {};
+  const out = { version: 1, updatedAt: d.updatedAt || 0, tombstones: d.tombstones && typeof d.tombstones === 'object' ? d.tombstones : {}, projects: [] };
+  for (const p of Array.isArray(d.projects) ? d.projects : []) {
+    if (!p || !p.id) continue;
+    out.projects.push({ ...p, name: p.name || 'Sans nom', color: COLORS.includes(p.color) ? p.color : 'blue',
+      cards: (Array.isArray(p.cards) ? p.cards : []).filter(c => c && c.id && TYPES[c.type]).map(c => {
+        const n = { ...c, color: COLORS.includes(c.color) ? c.color : TYPES[c.type].color };
+        if ((c.type === 'todo' || c.type === 'links') && !Array.isArray(n.items)) n.items = [];
+        return n;
+      }) });
+  }
+  return out;
+}
+/* Fusion de deux versions (ex : PC et téléphone) : on garde, carte par carte,
+   la version modifiée le plus récemment. Les suppressions sont mémorisées
+   (tombstones) pour ne pas faire réapparaître ce qui a été effacé ailleurs. */
+function mergeData(a, b) {
+  a = normalize(a); b = normalize(b);
+  const tomb = { ...b.tombstones };
+  for (const [k, v] of Object.entries(a.tombstones)) tomb[k] = Math.max(tomb[k] || 0, v);
+  const cutoff = now() - 120 * 864e5;
+  for (const k of Object.keys(tomb)) if (tomb[k] < cutoff) delete tomb[k];
+  const alive = o => !(tomb[o.id] && tomb[o.id] >= (o.updatedAt || 0));
+  const newer = (x, y) => ((y.updatedAt || 0) > (x.updatedAt || 0) ? y : x);
+  const mergeList = (la, lb, fn) => {
+    const map = new Map(), order = [];
+    for (const x of la) { map.set(x.id, x); order.push(x.id); }
+    for (const y of lb) { if (map.has(y.id)) map.set(y.id, fn(map.get(y.id), y)); else { map.set(y.id, y); order.push(y.id); } }
+    return order.map(id => map.get(id)).filter(alive);
+  };
+  const projects = mergeList(a.projects, b.projects, (pa, pb) => ({ ...newer(pa, pb), cards: mergeList(pa.cards, pb.cards, newer) }))
+    .map(p => ({ ...p, cards: p.cards.filter(alive) }));
+  return { version: 1, updatedAt: Math.max(a.updatedAt, b.updatedAt), tombstones: tomb, projects };
+}
+
+/* =========================================================
+   État + sauvegarde locale
+   ========================================================= */
+let meta = lsGet(LS.meta, null);
+let data = lsGet(LS.data, null);
+if (!data) { data = seed(); meta = { sha: null, lastSync: 0, dirty: false, pristine: true }; lsSet(LS.data, data); lsSet(LS.meta, meta); }
+data = normalize(data);
+meta = Object.assign({ sha: null, lastSync: 0, dirty: false, pristine: false, firstLink: false }, meta);
+let cfg = Object.assign({ token: '', owner: '', repo: '', branch: 'main', path: 'taskboard/data.json', device: guessDevice(), auto: true }, lsGet(LS.cfg, {}));
+let views = lsGet(LS.views, {});
+let current = null;      // id du projet ouvert (null = accueil)
+let dirtyRev = 0;
+let saveTimer = null;
+
+function guessDevice() {
+  const ua = navigator.userAgent;
+  if (/iPhone/.test(ua)) return 'iPhone'; if (/iPad/.test(ua)) return 'iPad'; if (/Android/.test(ua)) return 'Android';
+  if (/Mac/.test(ua)) return 'Mac'; if (/Win/.test(ua)) return 'PC Windows'; if (/Linux/.test(ua)) return 'Linux';
+  return 'Appareil';
+}
+const getProject = id => data.projects.find(p => p.id === id);
+const findCard = id => { const p = getProject(current); return p && p.cards.find(c => c.id === id); };
+function persist() { lsSet(LS.data, data); }
+function markDirty() {
+  dirtyRev++;
+  if (!meta.dirty || meta.pristine) { meta.dirty = true; meta.pristine = false; lsSet(LS.meta, meta); }
+  updateStatus(); scheduleSync();
+}
+function save() { clearTimeout(saveTimer); saveTimer = null; data.updatedAt = now(); persist(); markDirty(); }
+function saveSoon() { data.updatedAt = now(); clearTimeout(saveTimer); saveTimer = setTimeout(() => { saveTimer = null; persist(); }, 400); markDirty(); }
+function flushSave() { if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; persist(); } }
+function cardChanged(id, soon) { const c = findCard(id); if (c) c.updatedAt = now(); soon ? saveSoon() : save(); }
+let viewTimer = null;
+function saveViewSoon() {
+  if (!current) return;
+  views[current] = { x: view.x, y: view.y, z: view.z, t: (views[current] && views[current].t) || now() };
+  clearTimeout(viewTimer); viewTimer = setTimeout(() => lsSet(LS.views, views), 300);
+}
+
+/* =========================================================
+   Synchronisation GitHub (API Contents)
+   ========================================================= */
+let syncing = false, syncAgain = false, syncTimer = null, syncState = { state: 'idle', msg: '' };
+const cfgOk = () => !!(cfg.token && cfg.owner && cfg.repo && cfg.path);
+const enc = encodeURIComponent;
+const contentsUrl = () => `/repos/${enc(cfg.owner)}/${enc(cfg.repo)}/contents/${cfg.path.split('/').filter(Boolean).map(enc).join('/')}`;
+
+async function gh(method, url, body) {
+  const headers = { Authorization: 'Bearer ' + cfg.token, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+  if (body) headers['Content-Type'] = 'application/json';
+  return fetch('https://api.github.com' + url, { method, headers, cache: 'no-store', body: body ? JSON.stringify(body) : undefined });
+}
+async function ghError(r) {
+  let m = ''; try { m = (await r.json()).message || ''; } catch {}
+  if (r.status === 401) return 'Token invalide ou expiré (401).';
+  if (r.status === 403) return 'Accès refusé (403) : vérifie la permission « Contents : Read and write » du token. ' + m;
+  if (r.status === 404) return 'Dépôt ou branche introuvable (404) : vérifie propriétaire / dépôt / branche, et que le token a accès à ce dépôt.';
+  return `Erreur GitHub ${r.status} : ${m}`;
+}
+async function ghGetFile() {
+  const r = await gh('GET', contentsUrl() + '?ref=' + enc(cfg.branch || 'main'));
+  if (r.status === 404) {
+    let m = ''; try { m = (await r.json()).message || ''; } catch {}
+    if (/empty/i.test(m) || /not found/i.test(m)) {
+      // fichier absent (normal la 1re fois) — on vérifie quand même que le dépôt existe
+      const rr = await gh('GET', `/repos/${enc(cfg.owner)}/${enc(cfg.repo)}`);
+      if (!rr.ok) throw new Error(await ghError(rr));
+      return null;
+    }
+    throw new Error('Introuvable (404) : ' + m);
+  }
+  if (!r.ok) throw new Error(await ghError(r));
+  const j = await r.json();
+  let b64 = j.encoding === 'base64' ? j.content : '';
+  if (!b64) { // fichier > 1 Mo : passer par l'API blobs
+    const rb = await gh('GET', `/repos/${enc(cfg.owner)}/${enc(cfg.repo)}/git/blobs/${j.sha}`);
+    if (!rb.ok) throw new Error(await ghError(rb));
+    b64 = (await rb.json()).content;
+  }
+  let parsed;
+  try { parsed = JSON.parse(b64ToUtf8(b64)); } catch { throw new Error(`Le fichier ${cfg.path} sur GitHub n'est pas un JSON valide.`); }
+  return { sha: j.sha, data: normalize(parsed) };
+}
+async function ghPutFile(d, sha) {
+  const body = {
+    message: `taskboard: sauvegarde depuis ${cfg.device || 'appareil'} — ${new Date().toLocaleString('fr-FR')}`,
+    content: utf8ToB64(JSON.stringify(d, null, 1) + '\n'), branch: cfg.branch || 'main',
+  };
+  if (sha) body.sha = sha;
+  const r = await gh('PUT', contentsUrl(), body);
+  if (r.status === 409 || r.status === 422) return { conflict: true, msg: await ghError(r) };
+  if (!r.ok) throw new Error(await ghError(r));
+  return { sha: (await r.json()).content.sha };
+}
+function scheduleSync(delay = 4000) {
+  if (!cfgOk() || !cfg.auto) return;
+  clearTimeout(syncTimer); syncTimer = setTimeout(() => sync(), delay);
+}
+async function sync(manual) {
+  if (!cfgOk()) { if (manual) openSettings(); return; }
+  if (syncing) { syncAgain = true; return; }
+  clearTimeout(syncTimer);
+  syncing = true; setStatus('sync');
+  try {
+    flushSave();
+    let lastMsg = '';
+    for (let attempt = 0; ; attempt++) {
+      if (attempt >= 4) throw new Error(lastMsg || 'Conflit persistant avec GitHub, réessaie.');
+      const rev = dirtyRev, localStr = canon(data);
+      const remote = await ghGetFile();
+      // 1re synchro d'un appareil neuf : on prend directement GitHub (évite les projets d'exemple en double)
+      let takeRemote = false;
+      if (remote && meta.firstLink) {
+        takeRemote = meta.pristine || confirm(`Le fichier ${cfg.path} existe déjà sur GitHub (${remote.data.projects.length} projet(s)).\n\n` +
+          `OK = utiliser les données GitHub (les données de cet appareil sont remplacées)\nAnnuler = fusionner les deux`);
+        meta.firstLink = false;
+      }
+      const merged = takeRemote ? remote.data : mergeData(data, remote ? remote.data : {});
+      let sha = remote && remote.sha;
+      if (!remote || canon(merged) !== canon(remote.data)) {
+        const res = await ghPutFile(merged, sha);
+        if (res.conflict) { lastMsg = res.msg; continue; }  // quelqu'un a écrit entre-temps → on recommence
+        sha = res.sha;
+      }
+      meta.sha = sha; meta.lastSync = now(); meta.pristine = false;
+      if (dirtyRev !== rev) { data = mergeData(data, merged); syncAgain = true; }   // modifié pendant l'envoi
+      else { data = merged; meta.dirty = false; }
+      persist(); lsSet(LS.meta, meta);
+      if (canon(data) !== localStr) rerenderSafe();
+      setStatus('ok');
+      break;
+    }
+  } catch (e) {
+    console.error(e);
+    setStatus('err', e && e.message === 'Failed to fetch' ? 'Pas de connexion internet (ou GitHub injoignable).' : (e.message || String(e)));
+  } finally {
+    syncing = false;
+    if (syncAgain) { syncAgain = false; scheduleSync(800); }
+  }
+}
+function setStatus(state, msg = '') { syncState = { state, msg }; updateStatus(); }
+function updateStatus() {
+  const el = $('#syncStatus'); let cls, txt, title;
+  if (!cfgOk()) { cls = 'off'; txt = 'Local'; title = 'Sauvegarde uniquement dans ce navigateur. Clique pour relier GitHub.'; }
+  else if (syncState.state === 'sync') { cls = 'busy'; txt = 'Synchro…'; title = 'Synchronisation avec GitHub…'; }
+  else if (syncState.state === 'err') { cls = 'err'; txt = 'Erreur'; title = syncState.msg; }
+  else if (meta.dirty) { cls = 'dirty'; txt = 'Non envoyé'; title = 'Modifications enregistrées localement, pas encore sur GitHub.'; }
+  else { cls = 'ok'; txt = meta.lastSync ? 'Synchro ' + new Date(meta.lastSync).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Synchro'; title = `Sauvegardé sur GitHub : ${cfg.owner}/${cfg.repo}/${cfg.path}`; }
+  el.className = 'sync-status ' + cls; el.querySelector('.txt').textContent = txt; el.title = title;
+}
+
+/* =========================================================
+   Navigation
+   ========================================================= */
+function openProject(id) { location.hash = '#/p/' + enc(id); }
+function goHome() { location.hash = '#/'; }
+function route() {
+  const m = location.hash.match(/^#\/p\/(.+)$/);
+  const id = m ? decodeURIComponent(m[1]) : null;
+  current = id && getProject(id) ? id : null;
+  if (current) { views[current] = Object.assign(views[current] || {}, { t: now() }); lsSet(LS.views, views); }
+  render();
+}
+let pendingRender = false;
+function isEditing() { const a = document.activeElement; return !!(a && a !== document.body && (a.isContentEditable || /^(INPUT|TEXTAREA)$/.test(a.tagName)) && !a.closest('dialog')); }
+function rerenderSafe() { if (isEditing()) pendingRender = true; else render(); }
+document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !isEditing()) { pendingRender = false; render(); } }, 50));
+
+function render() {
+  if (current && !getProject(current)) current = null;
+  renderTabs();
+  $('#home').hidden = !!current; $('#board').hidden = !current;
+  $('#homeBtn').classList.toggle('active', !current);
+  if (current) renderBoard(); else renderHome();
+  const p = getProject(current);
+  document.title = p ? `${p.emoji || ''} ${p.name} — Mes Projets` : 'Mes Projets';
+}
+function renderTabs() {
+  const tabs = $('#tabs'); tabs.innerHTML = '';
+  data.projects.forEach((p, i) => {
+    const t = h('button', { class: 'tab' + (p.id === current ? ' active' : ''), style: { '--tint': `var(--tint-${p.color})` },
+      title: i < 9 ? `${p.name} (Alt+${i + 1})` : p.name, onclick: () => openProject(p.id) }, `${p.emoji || '📁'} ${p.name}`);
+    tabs.append(t);
+    if (p.id === current) requestAnimationFrame(() => t.scrollIntoView({ block: 'nearest', inline: 'nearest' }));
+  });
+}
+
+/* =========================================================
+   Accueil
+   ========================================================= */
+function bounds(cards) {
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const c of cards) { x1 = Math.min(x1, c.x); y1 = Math.min(y1, c.y); x2 = Math.max(x2, c.x + c.w); y2 = Math.max(y2, c.y + c.h); }
+  return { x: x1, y: y1, w: x2 - x1, h: y2 - y1 };
+}
+function minimap(p) {
+  const box = h('div', { class: 'minimap' });
+  if (!p.cards.length) { box.append(h('span', { class: 'muted small' }, 'Tableau vide')); return box; }
+  const b = bounds(p.cards), pad = 30, NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', `${b.x - pad} ${b.y - pad} ${b.w + pad * 2} ${b.h + pad * 2}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  for (const c of p.cards) {
+    const r = document.createElementNS(NS, 'rect');
+    for (const [k, v] of Object.entries({ x: c.x, y: c.y, width: c.w, height: c.h, rx: 14 })) r.setAttribute(k, v);
+    r.style.fill = `rgba(var(--tint-${c.color}),.35)`; r.style.stroke = `rgba(var(--tint-${c.color}),.8)`; r.style.strokeWidth = Math.max(2, b.w / 200);
+    svg.append(r);
+  }
+  box.append(svg); return box;
+}
+function renderHome() {
+  const grid = $('#projGrid'); grid.innerHTML = '';
+  data.projects.forEach((p, i) => {
+    const todos = p.cards.filter(c => c.type === 'todo').flatMap(c => c.items);
+    const done = todos.filter(t => t.done).length, next = todos.filter(t => !t.done && t.text).slice(0, 3);
+    const stop = fn => e => { e.stopPropagation(); fn(); };
+    grid.append(h('div', { class: 'tile', tabindex: 0, style: { '--tint': `var(--tint-${p.color})` },
+        onclick: () => openProject(p.id), onkeydown: e => { if (e.key === 'Enter' && e.target === e.currentTarget) openProject(p.id); } },
+      h('div', { class: 'tile-top' },
+        h('span', { class: 'tile-emoji' }, p.emoji || '📁'),
+        h('div', { class: 'tile-name', title: p.name }, p.name),
+        h('div', { class: 'tile-actions' },
+          i > 0 && h('button', { class: 'icon-btn', title: 'Déplacer à gauche', onclick: stop(() => moveProject(p.id, -1)) }, '←'),
+          i < data.projects.length - 1 && h('button', { class: 'icon-btn', title: 'Déplacer à droite', onclick: stop(() => moveProject(p.id, 1)) }, '→'),
+          h('button', { class: 'icon-btn', title: 'Modifier', onclick: stop(() => editProjectDialog(p.id)) }, '✎'),
+          h('button', { class: 'icon-btn', title: 'Supprimer', onclick: stop(() => deleteProject(p.id)) }, '🗑'))),
+      minimap(p),
+      h('div', { class: 'tile-stats' }, h('span', {}, `${p.cards.length} bloc${p.cards.length > 1 ? 's' : ''}`), todos.length ? h('span', {}, `${done}/${todos.length} tâches`) : null),
+      todos.length ? h('div', { class: 'bar' }, h('div', { style: { width: (done / todos.length * 100) + '%' } })) : null,
+      next.length ? h('ul', { class: 'tile-next' }, next.map(t => h('li', {}, t.text)))
+        : h('div', { class: 'muted small' }, todos.length ? 'Tout est fait 🎉' : 'Pas encore de tâches'),
+      i < 9 ? h('span', { class: 'tile-kbd' }, `Alt+${i + 1}`) : null));
+  });
+  grid.append(h('button', { class: 'tile new', onclick: () => editProjectDialog(null) }, '＋ Nouveau projet'));
+}
+function moveProject(id, dir) {
+  const i = data.projects.findIndex(p => p.id === id), j = i + dir;
+  if (i < 0 || j < 0 || j >= data.projects.length) return;
+  const [p] = data.projects.splice(i, 1); data.projects.splice(j, 0, p);
+  p.updatedAt = now(); save(); render();
+}
+function deleteProject(id) {
+  const p = getProject(id); if (!p) return;
+  if (!confirm(`Supprimer le projet « ${p.name} » et ses ${p.cards.length} blocs ?\n(Il reste récupérable dans l'historique GitHub si tu synchronises.)`)) return;
+  const t = now(); data.tombstones[p.id] = t; p.cards.forEach(c => data.tombstones[c.id] = t);
+  data.projects = data.projects.filter(x => x.id !== id);
+  delete views[id]; lsSet(LS.views, views);
+  save(); if (current === id) goHome(); else render();
+}
+const EMOJIS = ['🤖', '📈', '🎯', '✨', '💰', '🚀', '🧠', '💡', '📚', '🛠️', '📱', '🎬', '🪙', '📊', '🔥', '🗂️'];
+function editProjectDialog(id) {
+  const p = id ? getProject(id) : null, dlg = $('#projDlg');
+  let color = p ? p.color : COLORS[1 + (data.projects.length % (COLORS.length - 1))];
+  $('#projDlgTitle').textContent = p ? 'Modifier le projet' : 'Nouveau projet';
+  $('#projName').value = p ? p.name : ''; $('#projEmoji').value = p ? (p.emoji || '') : '📁';
+  const pick = $('#emojiPick'); pick.innerHTML = '';
+  EMOJIS.forEach(e => pick.append(h('button', { type: 'button', onclick: () => { $('#projEmoji').value = e; } }, e)));
+  const sw = $('#projColors');
+  const drawSw = () => { sw.innerHTML = ''; COLORS.forEach(c => sw.append(h('button', { type: 'button', class: 'swatch' + (c === color ? ' sel' : ''), title: c, style: { '--tint': `var(--tint-${c})` }, onclick: () => { color = c; drawSw(); } }))); };
+  drawSw();
+  dlg.returnValue = '';
+  dlg.onclose = () => {
+    if (dlg.returnValue !== 'ok') return;
+    const name = $('#projName').value.trim(); if (!name) return;
+    const emoji = $('#projEmoji').value.trim() || '📁';
+    if (p) { Object.assign(p, { name, emoji, color, updatedAt: now() }); save(); render(); }
+    else {
+      const np = { id: uid(), name, emoji, color, createdAt: now(), updatedAt: now(), cards: [makeCard('todo', 40, 40, { title: 'À faire' })] };
+      data.projects.push(np); save(); openProject(np.id);
+    }
+  };
+  dlg.showModal(); $('#projName').focus();
+}
+
+/* =========================================================
+   Tableau blanc : vue, déplacement, zoom
+   ========================================================= */
+const viewport = $('#viewport'), world = $('#world');
+let view = { x: 40, y: 40, z: 1 }, topZ = 1;
+function applyView() {
+  world.style.transform = `translate(${view.x}px,${view.y}px) scale(${view.z})`;
+  const g = 24 * view.z;
+  viewport.style.backgroundSize = `${g}px ${g}px`;
+  viewport.style.backgroundPosition = `${view.x}px ${view.y}px`;
+  $('#zoomLabel').textContent = Math.round(view.z * 100) + '%';
+  saveViewSoon();
+}
+function zoomAt(sx, sy, factor) {
+  const nz = clamp(view.z * factor, 0.1, 3);
+  const wx = (sx - view.x) / view.z, wy = (sy - view.y) / view.z;
+  view.z = nz; view.x = sx - wx * nz; view.y = sy - wy * nz; applyView();
+}
+function zoomCenter(f) { const r = viewport.getBoundingClientRect(); zoomAt(r.width / 2, r.height / 2, f); }
+function fit() {
+  const p = getProject(current); const r = viewport.getBoundingClientRect();
+  if (!p || !p.cards.length) { view = { x: 40, y: 40, z: 1 }; applyView(); return; }
+  const b = bounds(p.cards), pad = 60;
+  const z = clamp(Math.min((r.width - pad * 2) / b.w, (r.height - pad * 2 - 60) / b.h), 0.1, 1.2);
+  if (r.width < 640 && z < 0.7) view = { z: 0.7, x: 16 - b.x * 0.7, y: 16 - b.y * 0.7 };   // téléphone : lisible, on part du coin haut-gauche
+  else view = { z, x: (r.width - b.w * z) / 2 - b.x * z, y: (r.height - 60 - b.h * z) / 2 - b.y * z };
+  applyView();
+}
+function toWorld(clientX, clientY) { const r = viewport.getBoundingClientRect(); return { x: (clientX - r.left - view.x) / view.z, y: (clientY - r.top - view.y) / view.z }; }
+
+const pointers = new Map(); let gesture = null;
+function startGesture() {
+  const r = viewport.getBoundingClientRect(), pts = [...pointers.values()];
+  if (pts.length === 1) gesture = { type: 'pan', sx: pts[0].x, sy: pts[0].y, vx: view.x, vy: view.y };
+  else if (pts.length >= 2) {
+    const [a, b] = pts, mx = (a.x + b.x) / 2 - r.left, my = (a.y + b.y) / 2 - r.top;
+    gesture = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y) || 1, z: view.z, wx: (mx - view.x) / view.z, wy: (my - view.y) / view.z };
+  } else gesture = null;
+}
+viewport.addEventListener('pointerdown', e => {
+  const onBg = e.target === viewport || e.target === world;
+  if (!onBg && e.button !== 1) return;
+  if (e.button === 1) e.preventDefault();
+  if (document.activeElement && document.activeElement !== document.body && onBg) document.activeElement.blur();
+  viewport.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  startGesture(); document.body.classList.add('panning');
+});
+viewport.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId) || !gesture) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  const pts = [...pointers.values()];
+  if (gesture.type === 'pan') { view.x = gesture.vx + pts[0].x - gesture.sx; view.y = gesture.vy + pts[0].y - gesture.sy; applyView(); }
+  else if (pts.length >= 2) {
+    const r = viewport.getBoundingClientRect(), [a, b] = pts;
+    const z = clamp(gesture.z * Math.hypot(a.x - b.x, a.y - b.y) / gesture.d, 0.1, 3);
+    const mx = (a.x + b.x) / 2 - r.left, my = (a.y + b.y) / 2 - r.top;
+    view = { z, x: mx - gesture.wx * z, y: my - gesture.wy * z }; applyView();
+  }
+});
+const endPointer = e => {
+  if (!pointers.delete(e.pointerId)) return;
+  if (pointers.size) startGesture(); else { gesture = null; document.body.classList.remove('panning'); }
+};
+viewport.addEventListener('pointerup', endPointer);
+viewport.addEventListener('pointercancel', endPointer);
+
+function canScroll(target, dy) {
+  for (let el = target; el && !el.classList.contains('card'); el = el.parentElement) {
+    const oy = getComputedStyle(el).overflowY;
+    if ((oy === 'auto' || oy === 'scroll' || el.tagName === 'TEXTAREA') && el.scrollHeight > el.clientHeight + 1) {
+      if ((dy < 0 && el.scrollTop > 0) || (dy > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+    }
+  }
+  return false;
+}
+viewport.addEventListener('wheel', e => {
+  if (!e.ctrlKey && e.target.closest('.card') && canScroll(e.target, e.deltaY)) return;
+  e.preventDefault();
+  const r = viewport.getBoundingClientRect(), k = e.deltaMode === 1 ? 16 : 1;
+  const dx = e.deltaX * k, dy = e.deltaY * k;
+  if (e.ctrlKey) { zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-dy * 0.01)); return; }   // pincer sur trackpad
+  const trackpad = e.deltaMode === 0 && (Math.abs(dx) > 0 || (Math.abs(dy) < 40 && dy % 1 !== 0) || Math.abs(dy) < 15);
+  if (trackpad || e.shiftKey) { view.x -= e.shiftKey && !dx ? dy : dx; view.y -= e.shiftKey && !dx ? 0 : dy; applyView(); }
+  else zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-dy * 0.0015));
+}, { passive: false });
+viewport.addEventListener('dblclick', e => {
+  if (e.target !== viewport && e.target !== world) return;
+  const w = toWorld(e.clientX, e.clientY);
+  addCard('note', w.x - 40, w.y - 20, true);
+});
+$('#zoomIn').onclick = () => zoomCenter(1.2);
+$('#zoomOut').onclick = () => zoomCenter(1 / 1.2);
+$('#zoomLabel').onclick = () => zoomCenter(1 / view.z);
+$('#zoomFit').onclick = fit;
+document.querySelectorAll('#toolbar [data-add]').forEach(b => b.onclick = () => addCard(b.dataset.add));
+
+function renderBoard() {
+  const p = getProject(current);
+  world.innerHTML = '';
+  topZ = Math.max(1, ...p.cards.map(c => c.z || 0));
+  for (const c of p.cards) world.append(cardEl(c));
+  $('#emptyHint').hidden = p.cards.length > 0;
+  const v = views[p.id];
+  if (v && v.z) { view = { x: v.x, y: v.y, z: v.z }; applyView(); }
+  else requestAnimationFrame(fit);
+}
+function addCard(type, x, y, focus = true) {
+  const p = getProject(current); if (!p) return;
+  const t = TYPES[type];
+  if (x == null) {
+    const r = viewport.getBoundingClientRect(), off = (p.cards.length % 6) * 24;
+    x = (r.width / 2 - view.x) / view.z - t.w / 2 + off; y = (r.height / 2 - view.y) / view.z - t.h / 2 + off;
+  }
+  const c = makeCard(type, x, y, { z: ++topZ });
+  p.cards.push(c); save();
+  const el = cardEl(c); world.append(el); $('#emptyHint').hidden = true;
+  if (focus) requestAnimationFrame(() => { const f = el.querySelector('textarea, .todo-add, .media-url'); f && f.focus({ preventScroll: true }); });
+}
+
+/* =========================================================
+   Cartes
+   ========================================================= */
+function placeCard(el, c) {
+  Object.assign(el.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px', zIndex: c.z || 1 });
+  el.style.setProperty('--tint', `var(--tint-${c.color})`);
+}
+function cardEl(c) {
+  const id = c.id;
+  const title = h('div', { class: 'card-title', spellcheck: 'false', title: 'Double-clic pour renommer' }, c.title);
+  const head = h('div', { class: 'card-head' },
+    h('span', { class: 'card-icon' }, TYPES[c.type].icon), title,
+    h('button', { class: 'icon-btn swatch-btn', title: 'Couleur', onclick: e => colorPopover(e.currentTarget, id) }),
+    h('button', { class: 'icon-btn', title: 'Dupliquer', onclick: () => duplicateCard(id) }, '⧉'),
+    h('button', { class: 'icon-btn', title: 'Supprimer', onclick: () => deleteCard(id) }, '✕'));
+  const body = h('div', { class: 'card-body' });
+  const resize = h('div', { class: 'card-resize', title: 'Redimensionner' });
+  const el = h('div', { class: 'card', 'data-id': id }, head, body, resize);
+  placeCard(el, c);
+
+  ({ todo: bodyTodo, note: bodyNote, links: bodyLinks, video: bodyMedia })[c.type](body, id);
+
+  el.addEventListener('pointerdown', () => { const cc = findCard(id); if (cc && (cc.z || 0) < topZ) { cc.z = ++topZ; el.style.zIndex = cc.z; } }, true);
+  head.addEventListener('pointerdown', e => { if (e.button !== 0 || e.target.closest('button') || title.isContentEditable) return; dragCard(e, el, id, 'move'); });
+  resize.addEventListener('pointerdown', e => { if (e.button === 0) dragCard(e, el, id, 'resize'); });
+
+  const editTitle = () => {
+    title.contentEditable = 'true'; title.focus();
+    const range = document.createRange(); range.selectNodeContents(title); const s = getSelection(); s.removeAllRanges(); s.addRange(range);
+  };
+  title.addEventListener('dblclick', editTitle);
+  title.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); title.blur(); } });
+  title.addEventListener('blur', () => {
+    title.contentEditable = 'false';
+    const cc = findCard(id); if (!cc) return;
+    const v = title.textContent.trim() || TYPES[cc.type].label; title.textContent = v;
+    if (v !== cc.title) { cc.title = v; cardChanged(id); }
+  });
+  return el;
+}
+function dragCard(e, el, id, mode) {
+  e.preventDefault(); e.stopPropagation();
+  const c = findCard(id); if (!c) return;
+  const target = e.currentTarget; target.setPointerCapture(e.pointerId);
+  const s = { px: e.clientX, py: e.clientY, x: c.x, y: c.y, w: c.w, h: c.h }; let moved = false;
+  document.body.classList.add('dragging'); el.classList.add('lifted');
+  const move = ev => {
+    const dx = (ev.clientX - s.px) / view.z, dy = (ev.clientY - s.py) / view.z;
+    if (!moved && Math.abs(dx) + Math.abs(dy) < 2) return;
+    moved = true;
+    if (mode === 'move') { c.x = Math.round(s.x + dx); c.y = Math.round(s.y + dy); }
+    else { c.w = Math.round(Math.max(200, s.w + dx)); c.h = Math.round(Math.max(130, s.h + dy)); }
+    placeCard(el, c);
+  };
+  const up = () => {
+    target.removeEventListener('pointermove', move); target.removeEventListener('pointerup', up); target.removeEventListener('pointercancel', up);
+    document.body.classList.remove('dragging'); el.classList.remove('lifted');
+    if (moved) cardChanged(id);
+  };
+  target.addEventListener('pointermove', move); target.addEventListener('pointerup', up); target.addEventListener('pointercancel', up);
+}
+function deleteCard(id) {
+  const p = getProject(current), c = findCard(id); if (!c) return;
+  const hasContent = (c.items && c.items.length) || c.text || c.url;
+  if (hasContent && !confirm(`Supprimer le bloc « ${c.title} » ?`)) return;
+  data.tombstones[id] = now(); p.cards = p.cards.filter(x => x.id !== id); save();
+  const el = world.querySelector(`.card[data-id="${CSS.escape(id)}"]`); el && el.remove();
+  $('#emptyHint').hidden = p.cards.length > 0;
+}
+function duplicateCard(id) {
+  const p = getProject(current), c = findCard(id); if (!c) return;
+  const copy = JSON.parse(JSON.stringify(c));
+  Object.assign(copy, { id: uid(), x: c.x + 30, y: c.y + 30, z: ++topZ, title: c.title + ' (copie)', updatedAt: now() });
+  if (copy.items) copy.items.forEach(i => i.id = uid());
+  p.cards.push(copy); save(); world.append(cardEl(copy));
+}
+let popEl = null;
+function closePopover() { if (popEl) { popEl.remove(); popEl = null; document.removeEventListener('pointerdown', outsidePop, true); } }
+function outsidePop(e) { if (popEl && !popEl.contains(e.target)) closePopover(); }
+function colorPopover(anchor, id) {
+  closePopover();
+  const c = findCard(id); if (!c) return;
+  popEl = h('div', { class: 'popover' }, h('div', { class: 'swatches' }, COLORS.map(col =>
+    h('button', { class: 'swatch' + (col === c.color ? ' sel' : ''), title: col, style: { '--tint': `var(--tint-${col})` }, onclick: () => {
+      const cc = findCard(id); if (!cc) return; cc.color = col; cardChanged(id);
+      const el = world.querySelector(`.card[data-id="${CSS.escape(id)}"]`); el && placeCard(el, cc); closePopover();
+    } }))));
+  document.body.append(popEl);
+  const r = anchor.getBoundingClientRect();
+  popEl.style.left = clamp(r.left - 80, 8, innerWidth - popEl.offsetWidth - 8) + 'px';
+  popEl.style.top = clamp(r.bottom + 6, 8, innerHeight - popEl.offsetHeight - 8) + 'px';
+  setTimeout(() => document.addEventListener('pointerdown', outsidePop, true), 0);
+}
+
+/* ---------- To-do ---------- */
+function bodyTodo(body, id) {
+  const list = h('div', { class: 'todo-list' });
+  const fill = h('div'), count = h('span', {});
+  const clearBtn = h('button', { class: 'link-btn', title: 'Retirer les tâches terminées', onclick: () => {
+    const c = findCard(id); if (!c) return; c.items = c.items.filter(i => !i.done); cardChanged(id); draw(); } }, 'Nettoyer ✓');
+  const add = h('input', { class: 'field todo-add', placeholder: '+ Ajouter une tâche (Entrée)', enterkeyhint: 'enter' });
+  add.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const v = add.value.trim(); const c = findCard(id); if (!v || !c) return;
+    c.items.push({ id: uid(), text: v, done: false }); add.value = ''; cardChanged(id); draw(); list.scrollTop = list.scrollHeight;
+  });
+  const item = iid => { const c = findCard(id); return c && c.items.find(i => i.id === iid); };
+  function stats() {
+    const c = findCard(id); if (!c) return;
+    const n = c.items.length, d = c.items.filter(i => i.done).length;
+    count.textContent = n ? `${d}/${n}` : 'Aucune tâche'; fill.style.width = n ? (d / n * 100) + '%' : '0'; clearBtn.hidden = !d;
+  }
+  let dragId = null;
+  function row(it) {
+    const iid = it.id;
+    const cb = h('input', { type: 'checkbox' }); cb.checked = !!it.done;
+    const txt = h('div', { class: 'todo-text', contenteditable: 'true', spellcheck: 'false' }, it.text);
+    const grip = h('span', { class: 'drag-dot', title: 'Glisser pour réordonner' }, '⋮⋮');
+    const r = h('div', { class: 'todo-item' + (it.done ? ' done' : ''), 'data-iid': iid }, grip, cb, txt,
+      h('button', { class: 'x', title: 'Supprimer', onclick: () => { const c = findCard(id); c.items = c.items.filter(i => i.id !== iid); cardChanged(id); draw(); } }, '✕'));
+    cb.addEventListener('change', () => { const i = item(iid); if (!i) return; i.done = cb.checked; r.classList.toggle('done', i.done); cardChanged(id); stats(); });
+    txt.addEventListener('input', () => { const i = item(iid); if (!i) return; i.text = txt.textContent; cardChanged(id, true); });
+    txt.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); add.focus(); } });
+    txt.addEventListener('blur', () => { const i = item(iid); if (i && !i.text.trim()) { const c = findCard(id); c.items = c.items.filter(x => x.id !== iid); cardChanged(id); draw(); } });
+    // réordonner à la souris / au doigt
+    grip.addEventListener('pointerdown', e => {
+      e.preventDefault(); e.stopPropagation(); grip.setPointerCapture(e.pointerId); dragId = iid; r.style.opacity = .5;
+      let before = null;
+      const mv = ev => {
+        list.querySelectorAll('.drop-before').forEach(x => x.classList.remove('drop-before'));
+        const over = document.elementFromPoint(ev.clientX, ev.clientY); const tr = over && over.closest('.todo-item');
+        before = tr && tr.parentElement === list && tr !== r ? tr.dataset.iid : (over && over.closest('.todo-add') ? 'END' : before);
+        const tgt = before && before !== 'END' && list.querySelector(`[data-iid="${CSS.escape(before)}"]`); tgt && tgt.classList.add('drop-before');
+      };
+      const upH = () => {
+        grip.removeEventListener('pointermove', mv); grip.removeEventListener('pointerup', upH); grip.removeEventListener('pointercancel', upH);
+        r.style.opacity = ''; dragId = null;
+        if (!before) { list.querySelectorAll('.drop-before').forEach(x => x.classList.remove('drop-before')); return; }
+        const c = findCard(id); const from = c.items.findIndex(i => i.id === iid); if (from < 0) return;
+        const [moved] = c.items.splice(from, 1);
+        const to = before === 'END' ? c.items.length : c.items.findIndex(i => i.id === before);
+        c.items.splice(to < 0 ? c.items.length : to, 0, moved); cardChanged(id); draw();
+      };
+      grip.addEventListener('pointermove', mv); grip.addEventListener('pointerup', upH); grip.addEventListener('pointercancel', upH);
+    });
+    return r;
+  }
+  function draw() { const c = findCard(id); if (!c) return; list.innerHTML = ''; c.items.forEach(it => list.append(row(it))); stats(); }
+  draw();
+  body.append(h('div', { class: 'todo-head' }, h('div', { class: 'bar' }, fill), count, clearBtn), list, add);
+}
+
+/* ---------- Note ---------- */
+function bodyNote(body, id) {
+  const c = findCard(id);
+  const ta = h('textarea', { class: 'field', placeholder: 'Écris tes idées, infos, liens…', spellcheck: 'false', value: c.text || '' });
+  ta.addEventListener('input', () => { const cc = findCard(id); if (!cc) return; cc.text = ta.value; cardChanged(id, true); });
+  body.append(ta);
+}
+
+/* ---------- Liens ---------- */
+function parseLink(s) {
+  s = s.trim(); if (!s) return null;
+  const m = s.match(/https?:\/\/\S+/i);
+  if (m) return { url: m[0], label: s.replace(m[0], '').replace(/[\s|:–-]+$/, '').replace(/^[\s|:–-]+/, '').trim() };
+  if (/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(s)) return { url: 'https://' + s, label: '' };
+  return null;
+}
+function bodyLinks(body, id) {
+  const list = h('div', { class: 'link-list' });
+  const add = h('input', { class: 'field', placeholder: '+ Coller un lien (titre optionnel avant)', enterkeyhint: 'enter' });
+  function draw() {
+    const c = findCard(id); if (!c) return; list.innerHTML = '';
+    if (!c.items.length) list.append(h('div', { class: 'muted small', style: { padding: '4px' } }, 'Aucun lien. Ex : « Docs Jupiter https://station.jup.ag/docs »'));
+    for (const it of c.items) {
+      if (!isHttp(it.url)) continue;
+      const host = hostOf(it.url);
+      list.append(h('div', { class: 'link-item' },
+        h('span', { class: 'link-ico' }, ytId(it.url) ? '▶️' : '🔗'),
+        h('a', { href: it.url, target: '_blank', rel: 'noopener noreferrer', title: it.url },
+          h('span', { class: 'link-label' }, it.label || host + new URL(it.url).pathname.replace(/\/$/, '')), it.label ? h('span', { class: 'link-host' }, host) : null),
+        h('button', { class: 'x', title: 'Supprimer', onclick: () => { const cc = findCard(id); cc.items = cc.items.filter(x => x.id !== it.id); cardChanged(id); draw(); } }, '✕')));
+    }
+  }
+  add.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.isComposing) return;
+    const l = parseLink(add.value);
+    if (!l) { add.classList.remove('shake'); void add.offsetWidth; add.classList.add('shake'); return; }
+    const c = findCard(id); c.items.push({ id: uid(), ...l }); add.value = ''; cardChanged(id); draw(); list.scrollTop = list.scrollHeight;
+  });
+  draw(); body.append(list, add);
+}
+
+/* ---------- Vidéo / média ---------- */
+function mediaEl(u) {
+  if (!u) return h('div', { class: 'media-empty' }, '🎬 Colle un lien YouTube, Vimeo, une image ou une vidéo au-dessus');
+  if (!isHttp(u)) return h('div', { class: 'media-empty' }, 'Lien invalide (doit commencer par https://)');
+  const yt = ytId(u);
+  if (yt) {
+    const wrap = h('div', { class: 'media', style: { flex: '1', background: '#000' } });
+    const thumb = h('button', { class: 'yt-thumb', title: 'Lire ici', style: { backgroundImage: `url(https://i.ytimg.com/vi/${yt}/hqdefault.jpg)` } }, h('span', { class: 'play' }, '▶'));
+    thumb.onclick = () => thumb.replaceWith(h('iframe', { src: `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0`, allow: 'autoplay; encrypted-media; picture-in-picture; fullscreen', allowfullscreen: true, referrerpolicy: 'strict-origin-when-cross-origin' }));
+    wrap.append(thumb, h('a', { class: 'media-open', href: u, target: '_blank', rel: 'noopener noreferrer' }, 'YouTube ↗'));
+    return wrap;
+  }
+  const vm = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vm) return h('iframe', { src: `https://player.vimeo.com/video/${vm[1]}`, allow: 'autoplay; fullscreen; picture-in-picture', allowfullscreen: true });
+  if (/\.(png|jpe?g|gif|webp|avif|svg)(\?|#|$)/i.test(u)) return h('img', { src: u, alt: '', loading: 'lazy' });
+  if (/\.(mp4|webm|ogv|mov)(\?|#|$)/i.test(u)) return h('video', { src: u, controls: true, preload: 'metadata' });
+  return h('a', { class: 'media-link', href: u, target: '_blank', rel: 'noopener noreferrer' }, '🔗 Ouvrir ' + (hostOf(u) || u));
+}
+function bodyMedia(body, id) {
+  const c = findCard(id);
+  const url = h('input', { class: 'field media-url', placeholder: 'Lien YouTube / Vimeo / image / vidéo…', value: c.url || '' });
+  const media = h('div', { class: 'media' });
+  const ta = h('textarea', { class: 'field media-notes', placeholder: 'Notes / résumé…', spellcheck: 'false', value: c.text || '' });
+  const draw = () => { media.innerHTML = ''; const cc = findCard(id); media.append(mediaEl(cc ? (cc.url || '').trim() : '')); };
+  const commit = () => { const cc = findCard(id); if (!cc) return; const v = url.value.trim(); if (v !== cc.url) { cc.url = v; cardChanged(id); draw(); } };
+  url.addEventListener('change', commit);
+  url.addEventListener('keydown', e => { if (e.key === 'Enter') { commit(); url.blur(); } });
+  ta.addEventListener('input', () => { const cc = findCard(id); if (!cc) return; cc.text = ta.value; cardChanged(id, true); });
+  draw(); body.append(url, media, ta);
+}
+
+// Coller dans un contenteditable = texte brut uniquement
+document.addEventListener('paste', e => {
+  const t = e.target.closest && e.target.closest('[contenteditable=true]');
+  if (!t) return; e.preventDefault();
+  document.execCommand('insertText', false, (e.clipboardData.getData('text/plain') || '').replace(/\s*\n\s*/g, ' '));
+});
+
+/* =========================================================
+   Changement rapide (Ctrl+K)
+   ========================================================= */
+let swSel = 0;
+function openSwitcher() {
+  const dlg = $('#switchDlg'), input = $('#switchInput');
+  input.value = ''; swSel = 0; drawSwitcher(); dlg.showModal(); input.focus();
+}
+function switcherItems() {
+  const q = $('#switchInput').value.trim().toLowerCase();
+  const order = data.projects.map((p, i) => ({ p, i, t: (views[p.id] && views[p.id].t) || 0 }))
+    .filter(x => x.p.id !== current).sort((a, b) => b.t - a.t);
+  const items = order.map(x => ({ label: `${x.p.emoji || '📁'} ${x.p.name}`, k: x.i < 9 ? `Alt+${x.i + 1}` : '', go: () => openProject(x.p.id) }));
+  if (current) items.push({ label: '🏠 Accueil', k: 'Alt+0', go: goHome });
+  return q ? items.filter(it => it.label.toLowerCase().includes(q)) : items;
+}
+function drawSwitcher() {
+  const list = $('#switchList'); list.innerHTML = ''; const items = switcherItems();
+  swSel = clamp(swSel, 0, Math.max(0, items.length - 1));
+  items.forEach((it, i) => list.append(h('button', { class: 'sw-item' + (i === swSel ? ' sel' : ''), onclick: () => { $('#switchDlg').close(); it.go(); } }, it.label, h('span', { class: 'k' }, it.k))));
+  if (!items.length) list.append(h('div', { class: 'muted small', style: { padding: '8px' } }, 'Aucun projet trouvé'));
+}
+$('#switchInput').addEventListener('input', () => { swSel = 0; drawSwitcher(); });
+$('#switchInput').addEventListener('keydown', e => {
+  const items = switcherItems();
+  if (e.key === 'ArrowDown') { e.preventDefault(); swSel = (swSel + 1) % Math.max(1, items.length); drawSwitcher(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); swSel = (swSel - 1 + items.length) % Math.max(1, items.length); drawSwitcher(); }
+  else if (e.key === 'Enter') { e.preventDefault(); const it = items[swSel]; if (it) { $('#switchDlg').close(); it.go(); } }
+});
+
+/* =========================================================
+   Réglages
+   ========================================================= */
+function showMsg(text, kind) { const m = $('#cfgMsg'); m.hidden = !text; m.textContent = text; m.className = 'msg ' + (kind || ''); }
+function readCfgForm() {
+  return { ...cfg, token: $('#cfgToken').value.trim(), owner: $('#cfgOwner').value.trim(), repo: $('#cfgRepo').value.trim(),
+    branch: $('#cfgBranch').value.trim() || 'main', path: $('#cfgPath').value.trim().replace(/^\/+/, '') || 'taskboard/data.json',
+    device: $('#cfgDevice').value.trim() || guessDevice(), auto: $('#cfgAuto').checked };
+}
+function openSettings() {
+  $('#cfgToken').value = cfg.token; $('#cfgOwner').value = cfg.owner; $('#cfgRepo').value = cfg.repo;
+  $('#cfgBranch').value = cfg.branch; $('#cfgPath').value = cfg.path; $('#cfgDevice').value = cfg.device; $('#cfgAuto').checked = cfg.auto;
+  showMsg(syncState.state === 'err' ? '⚠ ' + syncState.msg : '', 'err');
+  $('#settingsDlg').showModal();
+}
+$('#cfgTest').onclick = async () => {
+  const saved = cfg; cfg = readCfgForm();
+  if (!cfgOk()) { cfg = saved; return showMsg('Remplis le token, le propriétaire et le dépôt.', 'err'); }
+  showMsg('Test en cours…');
+  try {
+    const r = await gh('GET', `/repos/${enc(cfg.owner)}/${enc(cfg.repo)}`);
+    if (!r.ok) throw new Error(await ghError(r));
+    const repo = await r.json();
+    const f = await ghGetFile();
+    const canPush = !repo.permissions || repo.permissions.push;
+    showMsg(`✔ Connecté à ${repo.full_name} (${repo.private ? 'privé' : '⚠ PUBLIC — tes notes seront visibles de tous'}).\n` +
+      (f ? `Fichier trouvé : ${f.data.projects.length} projet(s).` : `Le fichier ${cfg.path} sera créé à la 1re sauvegarde.`) +
+      (canPush ? '' : '\n⚠ Le token ne semble pas avoir le droit d\'écriture.'), canPush ? 'ok' : 'err');
+  } catch (e) { showMsg('✖ ' + (e.message === 'Failed to fetch' ? 'Pas de connexion internet.' : e.message), 'err'); }
+  finally { cfg = saved; }
+};
+$('#cfgSave').onclick = () => {
+  const n = readCfgForm(); const changedTarget = n.owner !== cfg.owner || n.repo !== cfg.repo || n.path !== cfg.path || n.branch !== cfg.branch;
+  cfg = n; lsSet(LS.cfg, cfg);
+  if (changedTarget) { meta.sha = null; meta.firstLink = true; lsSet(LS.meta, meta); }
+  $('#settingsDlg').close(); setStatus('idle'); if (cfgOk()) sync(true);
+};
+$('#exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+  const a = h('a', { href: URL.createObjectURL(blob), download: `mes-projets-${new Date().toISOString().slice(0, 10)}.json` });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$('#importBtn').onclick = () => $('#importFile').click();
+$('#importFile').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const imported = normalize(JSON.parse(await f.text()));
+    if (!confirm(`Importer ${imported.projects.length} projet(s) ? Ils seront fusionnés avec tes projets actuels.`)) return;
+    data = mergeData(data, imported); save(); render(); showMsg('✔ Import terminé.', 'ok');
+  } catch (err) { showMsg('✖ Fichier invalide : ' + err.message, 'err'); }
+};
+
+/* =========================================================
+   Démarrage & événements globaux
+   ========================================================= */
+function applyTheme(t) { document.documentElement.dataset.theme = t; $('meta[name=theme-color]').content = t === 'light' ? '#ffffff' : '#161920'; }
+applyTheme(lsGet(LS.theme, null) || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
+$('#themeBtn').onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; applyTheme(t); lsSet(LS.theme, t); };
+$('#homeBtn').onclick = goHome;
+$('#settingsBtn').onclick = openSettings;
+$('#syncStatus').onclick = () => (cfgOk() && syncState.state !== 'err') ? sync(true) : openSettings();
+$('#syncBtn').onclick = () => sync(true);
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
+  if (mod && k === 'k') { e.preventDefault(); openSwitcher(); return; }
+  if (mod && k === 's') { e.preventDefault(); sync(true); return; }
+  if (e.altKey && !mod && /^Digit[0-9]$/.test(e.code)) {
+    e.preventDefault(); const n = +e.code.slice(5);
+    if (n === 0) goHome(); else { const p = data.projects[n - 1]; if (p) openProject(p.id); }
+    return;
+  }
+  if (!isEditing() && !document.querySelector('dialog[open]') && current) {
+    if (k === '+' || k === '=') zoomCenter(1.2);
+    else if (k === '-') zoomCenter(1 / 1.2);
+    else if (k === '0' && !e.altKey) fit();
+  }
+});
+window.addEventListener('hashchange', route);
+window.addEventListener('resize', () => current && applyView());
+// Un autre onglet du même navigateur a modifié les données
+window.addEventListener('storage', e => {
+  if (e.key === LS.data && e.newValue) { data = normalize(JSON.parse(e.newValue)); rerenderSafe(); }
+  if (e.key === LS.meta && e.newValue) { meta = Object.assign(meta, JSON.parse(e.newValue)); updateStatus(); }
+  if (e.key === LS.cfg && e.newValue) { cfg = Object.assign(cfg, JSON.parse(e.newValue)); updateStatus(); }
+});
+// Retour sur l'appli (autre appareil a pu modifier) / départ (on envoie tout de suite)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { flushSave(); if (meta.dirty) sync(); }
+  else if (cfgOk() && cfg.auto && now() - meta.lastSync > 5000) sync();
+});
+window.addEventListener('pagehide', flushSave);
+window.addEventListener('online', () => cfgOk() && sync());
+setInterval(() => { if (document.visibilityState === 'visible' && cfgOk() && cfg.auto && !syncing && now() - meta.lastSync > 60000) sync(); }, 15000);
+
+route();
+updateStatus();
+if (cfgOk() && cfg.auto) sync();
+</script>
+</body>
+</html>
