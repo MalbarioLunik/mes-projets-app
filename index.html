@@ -370,19 +370,23 @@ function makeCard(type, x, y, extra = {}) {
   if (type === 'video') { c.url = ''; c.text = ''; }
   return Object.assign(c, extra);
 }
+// Projets de départ : identifiants fixes (et date 1) pour que deux appareils neufs
+// aient exactement les mêmes, et que la moindre modification réelle l'emporte.
 function seed() {
-  const t = now();
-  const mk = (name, emoji, color) => ({ id: uid(), name, emoji, color, createdAt: t, updatedAt: t, cards: [
-    makeCard('todo', 40, 40, { title: 'À faire' }),
-    makeCard('note', 370, 40, { title: 'Infos' }),
+  const mk = (key, name, emoji, color) => ({ id: 'seed-' + key, name, emoji, color, createdAt: 1, updatedAt: 1, cards: [
+    makeCard('todo', 40, 40, { id: `seed-${key}-todo`, title: 'À faire', updatedAt: 1 }),
+    makeCard('note', 370, 40, { id: `seed-${key}-note`, title: 'Infos', updatedAt: 1 }),
   ] });
-  return { version: 1, updatedAt: t, tombstones: {}, projects: [
-    mk('Bot trading memecoin', '🤖', 'green'),
-    mk('Info trading memecoin manuel', '📈', 'yellow'),
-    mk('Bot trading Kalshi', '🎯', 'blue'),
-    mk('Apps influence AI', '✨', 'purple'),
+  return { version: 1, updatedAt: 1, tombstones: {}, projects: [
+    mk('memecoin', 'Bot trading memecoin', '🤖', 'green'),
+    mk('manuel', 'Info trading memecoin manuel', '📈', 'yellow'),
+    mk('kalshi', 'Bot trading Kalshi', '🎯', 'blue'),
+    mk('influence', 'Apps influence AI', '✨', 'purple'),
   ] };
 }
+const cardIsEmpty = c => !(c.items && c.items.length) && !c.text && !c.url;
+const projectIsEmpty = p => p.cards.every(cardIsEmpty);
+const dataIsEmpty = d => normalize(d).projects.every(projectIsEmpty);
 function normalize(d) {
   d = d && typeof d === 'object' ? d : {};
   const out = { version: 1, updatedAt: d.updatedAt || 0, tombstones: d.tombstones && typeof d.tombstones === 'object' ? d.tombstones : {}, projects: [] };
@@ -416,7 +420,17 @@ function mergeData(a, b) {
   };
   const projects = mergeList(a.projects, b.projects, (pa, pb) => ({ ...newer(pa, pb), cards: mergeList(pa.cards, pb.cards, newer) }))
     .map(p => ({ ...p, cards: p.cards.filter(alive) }));
-  return { version: 1, updatedAt: Math.max(a.updatedAt, b.updatedAt), tombstones: tomb, projects };
+  // Doublons de même nom dont l'un est vide (ex : projets de départ créés sur deux appareils) : on garde le rempli
+  const byName = new Map();
+  for (const p of projects) { const k = p.name.trim().toLowerCase(); byName.set(k, [...(byName.get(k) || []), p]); }
+  const t = now();
+  for (const group of byName.values()) {
+    if (group.length < 2) continue;
+    const keep = group.find(p => !projectIsEmpty(p)) || group[0];
+    for (const p of group) if (p !== keep && projectIsEmpty(p)) { tomb[p.id] = t; p.cards.forEach(c => tomb[c.id] = t); }
+  }
+  const finalProjects = projects.filter(p => !(tomb[p.id] && tomb[p.id] >= (p.updatedAt || 0)));
+  return { version: 1, updatedAt: Math.max(a.updatedAt, b.updatedAt), tombstones: tomb, projects: finalProjects };
 }
 
 /* =========================================================
@@ -532,8 +546,8 @@ async function sync(manual) {
       // 1re synchro d'un appareil neuf : on prend directement GitHub (évite les projets d'exemple en double)
       let takeRemote = false;
       if (remote && meta.firstLink) {
-        takeRemote = meta.pristine || confirm(`Le fichier ${cfg.path} existe déjà sur GitHub (${remote.data.projects.length} projet(s)).\n\n` +
-          `OK = utiliser les données GitHub (les données de cet appareil sont remplacées)\nAnnuler = fusionner les deux`);
+        // appareil vide → on prend GitHub ; sinon on fusionne (on ne jette jamais ce qui est sur cet appareil)
+        takeRemote = meta.pristine || dataIsEmpty(data);
         meta.firstLink = false;
       }
       const merged = takeRemote ? remote.data : mergeData(data, remote ? remote.data : {});
@@ -543,7 +557,7 @@ async function sync(manual) {
         if (res.conflict) { lastMsg = res.msg; continue; }  // quelqu'un a écrit entre-temps → on recommence
         sha = res.sha;
       }
-      meta.sha = sha; meta.lastSync = now(); meta.pristine = false;
+      meta.sha = sha; meta.lastSync = now(); meta.pristine = false; meta.firstLink = false;
       if (dirtyRev !== rev) { data = mergeData(data, merged); syncAgain = true; }   // modifié pendant l'envoi
       else { data = merged; meta.dirty = false; }
       persist(); lsSet(LS.meta, meta);
