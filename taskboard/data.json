@@ -4,7 +4,19 @@
  "tombstones": {
   "muzecpnei05d3y": 1791455505217,
   "muzeh8rvj1jnsz": 1791455723073,
-  "muzecawgp5pyrz": 1791455733281
+  "muzecawgp5pyrz": 1791455733281,
+  "muzjnot86p0pc7": 1791532067828,
+  "muzjnot8yj3ry5": 1791532067828,
+  "muzjnot8fld1b2": 1791532067828,
+  "muzjnot85czi0n": 1791532067828,
+  "muzjnot8yh612r": 1791532067828,
+  "muzjnot8fjs0va": 1791532067828,
+  "muzjnot8lv5gkt": 1791532067828,
+  "muzjnot8aw29do": 1791532067828,
+  "muzjnot8n26sdj": 1791532067828,
+  "muzjnot8sj9lfy": 1791532067828,
+  "muzjnot8sqz5sq": 1791532067828,
+  "muzjnot8axdt2e": 1791532067828
  },
  "projects": [
   {
@@ -248,150 +260,6 @@
      "title": "Infos",
      "color": "yellow",
      "updatedAt": 1791455289067,
-     "text": ""
-    }
-   ]
-  },
-  {
-   "id": "muzjnot86p0pc7",
-   "name": "Bot trading memecoin",
-   "emoji": "🤖",
-   "color": "green",
-   "createdAt": 1791464414300,
-   "updatedAt": 1791464414300,
-   "cards": [
-    {
-     "id": "muzjnot8yj3ry5",
-     "type": "todo",
-     "x": 40,
-     "y": 40,
-     "w": 290,
-     "h": 330,
-     "z": 0,
-     "title": "À faire",
-     "color": "blue",
-     "updatedAt": 1791464414300,
-     "items": []
-    },
-    {
-     "id": "muzjnot8fld1b2",
-     "type": "note",
-     "x": 370,
-     "y": 40,
-     "w": 300,
-     "h": 240,
-     "z": 0,
-     "title": "Infos",
-     "color": "yellow",
-     "updatedAt": 1791464414300,
-     "text": ""
-    }
-   ]
-  },
-  {
-   "id": "muzjnot85czi0n",
-   "name": "Info trading memecoin manuel",
-   "emoji": "📈",
-   "color": "yellow",
-   "createdAt": 1791464414300,
-   "updatedAt": 1791464414300,
-   "cards": [
-    {
-     "id": "muzjnot8yh612r",
-     "type": "todo",
-     "x": 40,
-     "y": 40,
-     "w": 290,
-     "h": 330,
-     "z": 0,
-     "title": "À faire",
-     "color": "blue",
-     "updatedAt": 1791464414300,
-     "items": []
-    },
-    {
-     "id": "muzjnot8fjs0va",
-     "type": "note",
-     "x": 370,
-     "y": 40,
-     "w": 300,
-     "h": 240,
-     "z": 0,
-     "title": "Infos",
-     "color": "yellow",
-     "updatedAt": 1791464414300,
-     "text": ""
-    }
-   ]
-  },
-  {
-   "id": "muzjnot8lv5gkt",
-   "name": "Bot trading Kalshi",
-   "emoji": "🎯",
-   "color": "blue",
-   "createdAt": 1791464414300,
-   "updatedAt": 1791464414300,
-   "cards": [
-    {
-     "id": "muzjnot8aw29do",
-     "type": "todo",
-     "x": 40,
-     "y": 40,
-     "w": 290,
-     "h": 330,
-     "z": 0,
-     "title": "À faire",
-     "color": "blue",
-     "updatedAt": 1791464414300,
-     "items": []
-    },
-    {
-     "id": "muzjnot8n26sdj",
-     "type": "note",
-     "x": 370,
-     "y": 40,
-     "w": 300,
-     "h": 240,
-     "z": 0,
-     "title": "Infos",
-     "color": "yellow",
-     "updatedAt": 1791464414300,
-     "text": ""
-    }
-   ]
-  },
-  {
-   "id": "muzjnot8sj9lfy",
-   "name": "Apps influence AI",
-   "emoji": "✨",
-   "color": "purple",
-   "createdAt": 1791464414300,
-   "updatedAt": 1791464414300,
-   "cards": [
-    {
-     "id": "muzjnot8sqz5sq",
-     "type": "todo",
-     "x": 40,
-     "y": 40,
-     "w": 290,
-     "h": 330,
-     "z": 0,
-     "title": "À faire",
-     "color": "blue",
-     "updatedAt": 1791464414300,
-     "items": []
-    },
-    {
-     "id": "muzjnot8axdt2e",
-     "type": "note",
-     "x": 370,
-     "y": 40,
-     "w": 300,
-     "h": 240,
-     "z": 0,
-     "title": "Infos",
-     "color": "yellow",
-     "updatedAt": 1791464414300,
      "text": ""
     }
    ]
