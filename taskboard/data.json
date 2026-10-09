@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updatedAt": 1791464414300,
+ "updatedAt": 1791537644353,
  "tombstones": {
   "muzecpnei05d3y": 1791455505217,
   "muzeh8rvj1jnsz": 1791455723073,
@@ -201,7 +201,7 @@
      "y": 40,
      "w": 290,
      "h": 330,
-     "z": 4,
+     "z": 8,
      "title": "À faire",
      "color": "blue",
      "updatedAt": 1791455413553,
@@ -220,11 +220,11 @@
      "y": 40,
      "w": 300,
      "h": 240,
-     "z": 5,
+     "z": 7,
      "title": "Infos",
      "color": "yellow",
-     "updatedAt": 1791455472955,
-     "text": "Le but ici n'est pas de générer de gros profit mais plus avoir une stratégie qui permet d'etre rentable et constant, objectif : faire entre 0 a 50 c'est parfait "
+     "updatedAt": 1791537644353,
+     "text": "Le but ici n'est pas de générer de gros profit mais plus avoir une stratégie qui permet d'etre rentable et constant, objectif : faire entre 0 a 50 c'est parfait\n\nfaire sur kalashi en premier puis on fois qu'on a une strat intérrésante on le fait polymarket  "
     }
    ]
   },
