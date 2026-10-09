@@ -1,8 +1,257 @@
 {
  "version": 1,
  "updatedAt": 1791464414300,
- "tombstones": {},
+ "tombstones": {
+  "muzecpnei05d3y": 1791455505217,
+  "muzeh8rvj1jnsz": 1791455723073,
+  "muzecawgp5pyrz": 1791455733281
+ },
  "projects": [
+  {
+   "id": "muze83qjho4rlj",
+   "name": "Bot trading memecoin",
+   "emoji": "🤖",
+   "color": "green",
+   "createdAt": 1791455289066,
+   "updatedAt": 1791455289066,
+   "cards": [
+    {
+     "id": "muze83qjyam0r0",
+     "type": "todo",
+     "x": -174,
+     "y": -185,
+     "w": 272,
+     "h": 354,
+     "z": 38,
+     "title": "À faire",
+     "color": "blue",
+     "updatedAt": 1791458993110,
+     "items": [
+      {
+       "id": "muze8iz6xbh3ym",
+       "text": "Stratégie : Multi wallet intelligente",
+       "done": false
+      },
+      {
+       "id": "muze9h1n3o66s0",
+       "text": "Stratégie : Snipping Rugger",
+       "done": false
+      }
+     ]
+    },
+    {
+     "id": "muze83qjw15i38",
+     "type": "note",
+     "x": -236,
+     "y": -446,
+     "w": 392,
+     "h": 240,
+     "z": 39,
+     "title": "Infos",
+     "color": "yellow",
+     "updatedAt": 1791459843864,
+     "text": "Stratégie : Trouver wallet qui fait peut de trade mais que des trades ou il fait x5 x10, créer algorythme qui quand on lui donne une de ces wallet, attend que la personne fasse un gros "
+    },
+    {
+     "id": "muzecyg8i9f6e3",
+     "type": "video",
+     "x": 1209,
+     "y": -378,
+     "w": 380,
+     "h": 360,
+     "z": 20,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791455762155,
+     "url": "https://www.youtube.com/watch?v=ZunBDs70DG4",
+     "text": "Vidéo snipping rugger + bot telegram avec doc"
+    },
+    {
+     "id": "muzehz0wzkd0x6",
+     "type": "video",
+     "x": 1603,
+     "y": -380,
+     "w": 380,
+     "h": 360,
+     "z": 28,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791456571666,
+     "url": "https://www.youtube.com/watch?v=hQ9Mne3oj8s",
+     "text": "foramtion gratuite snipping rugger stratégie"
+    },
+    {
+     "id": "muzezgh5ivik7o",
+     "type": "video",
+     "x": 1995,
+     "y": -379,
+     "w": 380,
+     "h": 360,
+     "z": 29,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791456572962,
+     "url": "https://www.youtube.com/watch?v=YbFJl3OkD44",
+     "text": ""
+    },
+    {
+     "id": "muzf23qpk0pisa",
+     "type": "video",
+     "x": 2394,
+     "y": -381,
+     "w": 380,
+     "h": 360,
+     "z": 30,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791456692371,
+     "url": "https://www.youtube.com/watch?v=8qggecMhAlc",
+     "text": ""
+    },
+    {
+     "id": "muzf37t5s9iip7",
+     "type": "video",
+     "x": 1987,
+     "y": 9,
+     "w": 380,
+     "h": 360,
+     "z": 40,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791460634944,
+     "url": "https://www.youtube.com/watch?v=vInRXMAii38",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": "muze83qjst3q0y",
+   "name": "Info trading memecoin manuel",
+   "emoji": "📈",
+   "color": "yellow",
+   "createdAt": 1791455289066,
+   "updatedAt": 1791455289066,
+   "cards": [
+    {
+     "id": "muze83qjdjh9cp",
+     "type": "todo",
+     "x": 40,
+     "y": 40,
+     "w": 290,
+     "h": 330,
+     "z": 2,
+     "title": "À faire",
+     "color": "blue",
+     "updatedAt": 1791455289067,
+     "items": []
+    },
+    {
+     "id": "muze83qj0klpwr",
+     "type": "note",
+     "x": 370,
+     "y": 40,
+     "w": 300,
+     "h": 240,
+     "z": 4,
+     "title": "Infos",
+     "color": "yellow",
+     "updatedAt": 1791460654889,
+     "text": "ebook memecoin base coinland"
+    },
+    {
+     "id": "muzf953er29odd",
+     "type": "video",
+     "x": 739,
+     "y": 92,
+     "w": 380,
+     "h": 360,
+     "z": 3,
+     "title": "Vidéo / Média",
+     "color": "purple",
+     "updatedAt": 1791457020268,
+     "url": "https://www.youtube.com/watch?v=KBgcOGWEARY",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": "muze83qjpummt3",
+   "name": "Bot trading Kalshi",
+   "emoji": "🎯",
+   "color": "blue",
+   "createdAt": 1791455289066,
+   "updatedAt": 1791455289066,
+   "cards": [
+    {
+     "id": "muze83qjo3njiz",
+     "type": "todo",
+     "x": 40,
+     "y": 40,
+     "w": 290,
+     "h": 330,
+     "z": 4,
+     "title": "À faire",
+     "color": "blue",
+     "updatedAt": 1791455413553,
+     "items": [
+      {
+       "id": "muzearshp0eqgb",
+       "text": "Reprendre le source code, relier un agent ai comme il le dit, puis tester des stratégie de maniére efficiente",
+       "done": false
+      }
+     ]
+    },
+    {
+     "id": "muze83qjd0wmez",
+     "type": "note",
+     "x": 370,
+     "y": 40,
+     "w": 300,
+     "h": 240,
+     "z": 5,
+     "title": "Infos",
+     "color": "yellow",
+     "updatedAt": 1791455472955,
+     "text": "Le but ici n'est pas de générer de gros profit mais plus avoir une stratégie qui permet d'etre rentable et constant, objectif : faire entre 0 a 50 c'est parfait "
+    }
+   ]
+  },
+  {
+   "id": "muze83qjfvk78d",
+   "name": "Apps influence AI",
+   "emoji": "✨",
+   "color": "purple",
+   "createdAt": 1791455289066,
+   "updatedAt": 1791455289066,
+   "cards": [
+    {
+     "id": "muze83qjxtult3",
+     "type": "todo",
+     "x": 40,
+     "y": 40,
+     "w": 290,
+     "h": 330,
+     "z": 0,
+     "title": "À faire",
+     "color": "blue",
+     "updatedAt": 1791455289067,
+     "items": []
+    },
+    {
+     "id": "muze83qjo3ynot",
+     "type": "note",
+     "x": 370,
+     "y": 40,
+     "w": 300,
+     "h": 240,
+     "z": 0,
+     "title": "Infos",
+     "color": "yellow",
+     "updatedAt": 1791455289067,
+     "text": ""
+    }
+   ]
+  },
   {
    "id": "muzjnot86p0pc7",
    "name": "Bot trading memecoin",
